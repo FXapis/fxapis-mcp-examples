@@ -1,0 +1,9 @@
+{
+  "model": "claude-opus-5-5",
+  "max_tokens": 16000,
+  "mcp_servers": [
+    { "type": "url", "url": "https://api.fxapis.com/mcp", "name": "fxapis", "authorization_token": "fx_live_…" }
+  ],
+  "tools": [{ "type": "mcp_toolset", "mcp_server_name": "fxapis" }],
+  "messages": [{ "role": "user", "content": "Which of my MT5 accounts are online?" }]
+}

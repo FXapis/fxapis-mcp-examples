@@ -1,0 +1,15 @@
+{
+  "name": "fxapis-mcp-examples-scripts",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A plain MCP client script against the fxapis MCP server, with no AI model involved.",
+  "license": "MIT",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "list-accounts": "node list-accounts.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1"
+  }
+}

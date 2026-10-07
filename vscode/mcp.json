@@ -1,0 +1,12 @@
+{
+  "inputs": [
+    { "type": "promptString", "id": "fxapis-key", "description": "fxapis API key", "password": true }
+  ],
+  "servers": {
+    "fxapis": {
+      "type": "http",
+      "url": "https://api.fxapis.com/mcp",
+      "headers": { "Authorization": "Bearer ${input:fxapis-key}" }
+    }
+  }
+}

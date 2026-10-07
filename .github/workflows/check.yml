@@ -1,0 +1,58 @@
+# Validates every config's JSON, then actually calls the live fxapis MCP
+# server with a deliberately invalid key and checks for fxapis's real 401 --
+# proving each client script still reaches the server and authenticates the
+# way it claims to, without needing a real account or placing any order.
+name: check
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1" # weekly, to catch a protocol or endpoint change
+
+jobs:
+  json:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          for f in claude/*.json claude-code/*.json cursor/*.json vscode/*.json openai-api/*.json anthropic-api/*.json; do
+            echo "checking $f"
+            python3 -m json.tool "$f" > /dev/null
+          done
+
+  python-script:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scripts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: expect fxapis's 401 with an invalid key
+        run: |
+          set +e
+          out=$(FXAPIS_API_KEY=fx_test_invalid_ci_check python3 list_accounts.py 2>&1)
+          echo "$out"
+          echo "$out" | grep -q "A valid fxapis API key is required" || { echo "did not get fxapis's expected 401"; exit 1; }
+
+  node-script:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scripts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - name: expect fxapis's 401 with an invalid key
+        run: |
+          set +e
+          out=$(FXAPIS_API_KEY=fx_test_invalid_ci_check node list-accounts.mjs 2>&1)
+          echo "$out"
+          echo "$out" | grep -q "A valid fxapis API key is required" || { echo "did not get fxapis's expected 401"; exit 1; }

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "fxapis": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://api.fxapis.com/mcp", "--header", "Authorization:${FXAPIS_AUTH}"],
+      "env": { "FXAPIS_AUTH": "Bearer fx_live_…" }
+    }
+  }
+}

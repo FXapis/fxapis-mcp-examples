@@ -1,0 +1,17 @@
+{
+  "model": "gpt-5.1",
+  "input": "Which of my MT5 accounts are online, and what positions are open on each?",
+  "tools": [
+    {
+      "type": "mcp",
+      "server_label": "fxapis",
+      "server_url": "https://api.fxapis.com/mcp",
+      "authorization": "fx_live_…",
+      "require_approval": {
+        "never": {
+          "tool_names": ["list_accounts", "get_account_status", "list_positions", "get_order", "list_orders"]
+        }
+      }
+    }
+  ]
+}

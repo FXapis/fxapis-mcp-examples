@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "fxapis": {
+      "type": "http",
+      "url": "https://api.fxapis.com/mcp",
+      "headers": { "Authorization": "Bearer ${FXAPIS_KEY}" }
+    }
+  }
+}
