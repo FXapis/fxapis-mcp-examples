@@ -191,7 +191,7 @@ Every order an agent places is recorded like any other — in `list_orders` and 
 ## Limits today
 
 - **API keys only.** OAuth sign-in, which would let a claude.ai or ChatGPT user connect with their fxapis login instead of a key, is planned.
-- **No streaming or notifications.** Tools answer once. Following an account coming online or a multi-account order settling is done by polling, as with the REST API — fxapis has no event webhooks yet.
+- **No streaming or notifications to the agent.** Tools answer once. An agent following an account coming online or a multi-account order settling polls for it. For your own server, fxapis sends [webhooks](https://docs.fxapis.com/guides/webhooks) — but an MCP client has nowhere to receive them.
 - **MetaTrader 5 only.** MT4 is not supported.
 
 ## Related fxapis repositories
