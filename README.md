@@ -107,13 +107,15 @@ Arguments are `snake_case`. Account ids are the fxapis UUIDs from `list_accounts
 | `get_workspace` | Plan, its limits and features, and whether trading is switched off | `accounts:read` |
 | `get_usage` | This month's orders, multi-account orders and API calls against the plan | `accounts:read` |
 | `list_accounts` | Every connected MT5 account with its id, login, server and state | `accounts:read` |
-| `get_account` | One account: broker, currency, leverage, state | `accounts:read` |
+| `get_account` | One account: broker, currency, leverage, state, and its last-read balance and equity | `accounts:read` |
 | `get_account_status` | Just the state — poll it after `bring_accounts_online` until `ready` | `accounts:read` |
+| `get_account_figures` | Balance, equity, margin and margin level — the last read, or fresh from the terminal (`fresh: true`) | `accounts:read` |
 | `list_positions` | Positions on an account as last observed, with `observedAt` | `trading:read` |
 | `list_instruments` | Markets named once (`XAUUSD`, `US30`…), whatever each broker calls them | any key |
-| `search_broker_servers` | The exact MT5 server for a broker's name or the start of a server name | any key |
+| `search_broker_servers` | The exact MT5 server for a broker's name or the start of a server name | `accounts:read` |
 | `list_account_instruments` | The broker symbol each instrument trades as on an account, or why it cannot | `accounts:read` |
 | `get_market_hours` | Whether a market is open now on an account's broker, and its weekly sessions in UTC | `accounts:read` |
+| `get_quotes` | Live bid and ask for up to 20 symbols or instruments, from the account's own broker | `trading:read` |
 | `list_orders` | Orders, newest first, filtered by account, state, symbol and time; paginated | `trading:read` |
 | `get_order` | One order, the broker's return code and fill; optionally its deals | `trading:read` (+ `history:read` for deals) |
 | `list_deals` | The broker's deal history for an account, including deals no order of yours caused | `history:read` |
