@@ -13,7 +13,6 @@ list_accounts and list_positions tools directly.
 from __future__ import annotations
 
 import asyncio
-import json
 import os
 import sys
 
@@ -22,6 +21,24 @@ from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
 MCP_URL = "https://api.fxapis.com/mcp"
+
+
+async def all_items(session: ClientSession, name: str, args: dict) -> list[dict]:
+    """Every row of a list tool.
+
+    Each tool answers with one line for the model in `content` and the data as
+    `structuredContent`. Lists are {items, next_cursor, total}, 25 at a time.
+    """
+    items: list[dict] = []
+    cursor = None
+    while True:
+        result = await session.call_tool(name, {**args, **({"cursor": cursor} if cursor else {})})
+        if result.isError:
+            raise RuntimeError(result.content[0].text)
+        items.extend(result.structuredContent["items"])
+        cursor = result.structuredContent.get("next_cursor")
+        if not cursor:
+            return items
 
 
 async def main() -> None:
@@ -35,19 +52,14 @@ async def main() -> None:
         async with ClientSession(read, write) as session:
             await session.initialize()
 
-            accounts = await session.call_tool("list_accounts", {})
-            data = json.loads(accounts.content[0].text)
-            rows = data.get("data", data) if isinstance(data, dict) else data
-            print(f"{len(rows)} account(s):\n")
+            accounts = await all_items(session, "list_accounts", {})
+            print(f"{len(accounts)} account(s):\n")
 
-            for account in rows:
+            for account in accounts:
                 print(f"  {account['id']}  {account['login']}@{account['server']}  state={account['state']}")
                 if account["state"] != "ready":
                     continue
-                positions = await session.call_tool("list_positions", {"account_id": account["id"]})
-                pos_data = json.loads(positions.content[0].text)
-                pos_rows = pos_data.get("data", pos_data) if isinstance(pos_data, dict) else pos_data
-                for p in pos_rows:
+                for p in await all_items(session, "list_positions", {"account_id": account["id"]}):
                     print(f"      {p['symbol']:<10} {p['side']:<4} {p['volume']:>6}  profit={p['profit']}")
 
 

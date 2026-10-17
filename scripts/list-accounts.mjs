@@ -26,18 +26,27 @@ const transport = new StreamableHTTPClientTransport(new URL(MCP_URL), {
 const client = new Client({ name: "fxapis-mcp-examples", version: "1.0.0" });
 await client.connect(transport);
 
-const accounts = await client.callTool({ name: "list_accounts", arguments: {} });
-const data = JSON.parse(accounts.content[0].text);
-const rows = Array.isArray(data) ? data : (data.data ?? data);
-console.log(`${rows.length} account(s):\n`);
+// Each tool answers with one line for the model in `content` and the data as
+// `structuredContent`. Lists are { items, next_cursor, total }, 25 at a time.
+async function all(name, args) {
+  const items = [];
+  let cursor;
+  do {
+    const result = await client.callTool({ name, arguments: { ...args, ...(cursor ? { cursor } : {}) } });
+    if (result.isError) throw new Error(result.content[0].text);
+    items.push(...result.structuredContent.items);
+    cursor = result.structuredContent.next_cursor;
+  } while (cursor);
+  return items;
+}
 
-for (const account of rows) {
+const accounts = await all("list_accounts", {});
+console.log(`${accounts.length} account(s):\n`);
+
+for (const account of accounts) {
   console.log(`  ${account.id}  ${account.login}@${account.server}  state=${account.state}`);
   if (account.state !== "ready") continue;
-  const positions = await client.callTool({ name: "list_positions", arguments: { account_id: account.id } });
-  const posData = JSON.parse(positions.content[0].text);
-  const posRows = Array.isArray(posData) ? posData : (posData.data ?? posData);
-  for (const p of posRows) {
+  for (const p of await all("list_positions", { account_id: account.id })) {
     console.log(`      ${p.symbol.padEnd(10)} ${p.side.padEnd(4)} ${String(p.volume).padStart(6)}  profit=${p.profit}`);
   }
 }

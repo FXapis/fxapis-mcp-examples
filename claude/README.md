@@ -1,25 +1,30 @@
 # Claude (claude.ai and Claude Desktop)
 
-## claude.ai — custom connector
+## claude.ai — custom connector with sign-in
 
-**Customize → Connectors → Add custom connector** (Team/Enterprise: an Owner adds it under
-**Organization settings → Connectors**).
+On any Claude plan: **Customize → Connectors → Add custom connector** (Team/Enterprise: an Owner
+adds it under **Organization settings → Connectors**).
 
-1. **MCP server URL:** `https://api.fxapis.com/mcp`
-2. **Authentication:** choose **No sign-in**.
-3. **Request headers:** add `authorization` with the value `Bearer fx_live_…` — include the word
-   `Bearer` and the space; Claude sends the value exactly as typed.
+1. **Remote MCP server URL:** `https://api.fxapis.com/mcp` (or `https://api.fxapis.com/mcp/insights`
+   for the [read-only server](../README.md#read-only-server)).
+2. Leave the OAuth client fields empty: Claude registers itself.
+3. Click **Connect** and sign in to fxapis in the window that opens. Read access is always
+   included; **Trading** is off unless you turn it on for the accounts you pick (it needs
+   two-factor). Then allow it.
 
-> **Request headers are in beta at Claude.** If your dialog does not show that section yet, use
-> Claude Code, or Claude Desktop through `mcp-remote` below, until it does. Header settings
-> cannot be edited later: to change the key, remove the connector and add it again.
+Connectors added on claude.ai are also available in the Claude desktop app. The connection is
+listed under **Connected apps** on the [API keys page](https://fxapis.com/dashboard/keys), where
+**Revoke** ends it at once.
 
-Connectors added on claude.ai are also available in the Claude desktop app.
+For the `trading-mt5-safely` skill, download
+[trading-mt5-safely.zip](https://docs.fxapis.com/downloads/trading-mt5-safely.zip) and upload it
+under **Settings → Capabilities → Skills**.
 
-## Claude Desktop without request headers
+## Claude Desktop with an API key
 
-Claude Desktop can run the open-source [`mcp-remote`](https://www.npmjs.com/package/mcp-remote)
-bridge, which adds the header for it. Needs Node.js 18+.
+To use a key instead of signing in, Claude Desktop can run the open-source
+[`mcp-remote`](https://www.npmjs.com/package/mcp-remote) bridge, which adds the header for it.
+Needs Node.js 18+.
 
 1. Open **Settings → Developer → Edit Config**.
 2. Paste [`claude_desktop_config.json`](claude_desktop_config.json) in (merge it if you already

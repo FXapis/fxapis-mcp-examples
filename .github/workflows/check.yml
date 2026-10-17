@@ -1,5 +1,5 @@
 # Validates every config's JSON, then actually calls the live fxapis MCP
-# server with a deliberately invalid key and checks for fxapis's real 401 --
+# server with a well-formed but invalid key and checks for fxapis's real 401 --
 # proving each client script still reaches the server and authenticates the
 # way it claims to, without needing a real account or placing any order.
 name: check
@@ -35,9 +35,9 @@ jobs:
       - name: expect fxapis's 401 with an invalid key
         run: |
           set +e
-          out=$(FXAPIS_API_KEY=fx_test_invalid_ci_check python3 list_accounts.py 2>&1)
+          out=$(FXAPIS_API_KEY=fx_test_00000000_invalid0ci0check0invalid0ci0check0 python3 list_accounts.py 2>&1)
           echo "$out"
-          echo "$out" | grep -q "A valid fxapis API key is required" || { echo "did not get fxapis's expected 401"; exit 1; }
+          echo "$out" | grep -q "The API key is not valid." || { echo "did not get fxapis's expected 401"; exit 1; }
 
   node-script:
     runs-on: ubuntu-latest
@@ -53,6 +53,6 @@ jobs:
       - name: expect fxapis's 401 with an invalid key
         run: |
           set +e
-          out=$(FXAPIS_API_KEY=fx_test_invalid_ci_check node list-accounts.mjs 2>&1)
+          out=$(FXAPIS_API_KEY=fx_test_00000000_invalid0ci0check0invalid0ci0check0 node list-accounts.mjs 2>&1)
           echo "$out"
-          echo "$out" | grep -q "A valid fxapis API key is required" || { echo "did not get fxapis's expected 401"; exit 1; }
+          echo "$out" | grep -q "The API key is not valid." || { echo "did not get fxapis's expected 401"; exit 1; }

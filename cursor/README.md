@@ -1,5 +1,8 @@
 # Cursor
 
+Cursor connects with an API key: fxapis does not accept sign-in returns to a custom scheme such as
+`cursor://` yet.
+
 Copy [`mcp.json`](mcp.json) to `~/.cursor/mcp.json` (every project) or `.cursor/mcp.json` (one
 project), then export the key:
 
