@@ -18,6 +18,6 @@ sed "s/fx_live_…/$FXAPIS_KEY/" request.json | \
 including every trade. The value in `authorization` is not stored by OpenAI; it is sent with
 each request.
 
-**ChatGPT** connects with sign-in, not a key: in developer mode, **Create app** with the URL
-`https://api.fxapis.com/mcp` and **Authentication: OAuth**, then sign in to fxapis when asked. See
-[ChatGPT](../README.md#chatgpt).
+**ChatGPT** connects with sign-in, not a key: on the web, **Plugins → + → Add custom MCP server** with
+the URL `https://api.fxapis.com/mcp` and **Authentication: OAuth**, then sign in to fxapis when asked.
+See [ChatGPT](../README.md#chatgpt).

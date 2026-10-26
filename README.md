@@ -95,7 +95,7 @@ Where a config uses a key, replace `fx_live_…` / `${FXAPIS_KEY}` with yours. *
 
 - **[Claude](claude/)** — claude.ai custom connector with sign-in (any plan; also in Claude Desktop), or Claude Desktop via `mcp-remote` with a key
 - **[Claude Code](claude-code/)** — `claude mcp add --transport http fxapis https://api.fxapis.com/mcp`, then sign in from `/mcp`; or the [plugin](#claude-code-plugin-and-skill); or a key in a team `.mcp.json`
-- **[ChatGPT](#chatgpt)** — developer mode, with sign-in
+- **[ChatGPT](#chatgpt)** — custom MCP server on the web, with sign-in
 - **[Cursor](cursor/)** — with a key
 - **[VS Code](vscode/)** — GitHub Copilot agent mode, with a key
 - **[OpenAI API](openai-api/)** — Responses API, `tools: [{ type: "mcp" }]`
@@ -111,12 +111,12 @@ Where a config uses a key, replace `fx_live_…` / `${FXAPIS_KEY}` with yours. *
 
 ### ChatGPT
 
-Turn on **Settings → Apps → Advanced settings → Developer mode** (on the plans OpenAI offers it on), then **Create app**:
+Add it in ChatGPT **on the web**: open **Plugins**, choose **+**, then **Add custom MCP server**:
 
-- **MCP server URL:** `https://api.fxapis.com/mcp`
+- **URL:** `https://api.fxapis.com/mcp`, or `https://api.fxapis.com/mcp/insights` for the [read-only server](#read-only-server)
 - **Authentication:** OAuth
 
-Sign in to fxapis when ChatGPT asks. Agents built on the OpenAI API use a key instead: see [`openai-api/`](openai-api/).
+Sign in to fxapis when ChatGPT asks. What ChatGPT allows depends on your ChatGPT plan: OpenAI's help page, [Connecting custom MCP servers in ChatGPT](https://help.openai.com/en/articles/12584461) (checked 26 October 2026), lists full MCP, including actions that change things, for Business, Enterprise and Edu, and read and fetch only for Pro. Agents built on the OpenAI API use a key instead: see [`openai-api/`](openai-api/).
 
 ## Claude Code plugin and skill
 
@@ -200,7 +200,7 @@ A connected app that was not allowed to trade, and calls a trading tool, gets `4
 https://api.fxapis.com/mcp/insights
 ```
 
-The read-only server answers questions about your MT5 accounts and cannot trade: it has no tool that opens, closes or changes anything, and its sign-in grants read access only. It is the fxapis connector listed in the Claude and ChatGPT directories, whose rules exclude tools that execute financial transactions.
+The read-only server answers questions about your MT5 accounts and cannot trade: it has no tool that opens, closes or changes anything, and its sign-in grants read access only. It is the fxapis connector we are submitting to the Claude and ChatGPT directories, whose rules exclude tools that execute financial transactions; until it is listed, add it by URL.
 
 Its 14 tools are the read tools above, with the same arguments and answers: `list_accounts`, `get_account`, `get_account_status`, `get_account_figures`, `list_positions`, `list_instruments`, `list_account_instruments`, `get_market_hours`, `get_quotes`, `list_orders`, `get_order`, `list_deals`, `get_account_overview` and `get_symbol_snapshot`.
 
@@ -254,7 +254,7 @@ Every order an agent places is recorded like any other — in `list_orders` and 
 ## Example prompts
 
 - "Which of my MT5 accounts are online, and what positions are open on each?"
-- "What was my realised profit on EURUSD this week on the Vantage demo account?"
+- "What was my realised profit on EURUSD this week on my demo account?"
 - "How much margin would 0.5 lots of XAUUSD need on account 2?"
 - "Bring all my accounts online, then tell me when they are ready."
 - "Move the stop loss on my gold position to break-even." *(needs `trading:reduce`)*
