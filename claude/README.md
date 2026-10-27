@@ -5,10 +5,11 @@
 On any Claude plan: **Customize → Connectors → Add custom connector** (Team/Enterprise: an Owner
 adds it under **Organization settings → Connectors**).
 
-1. **Remote MCP server URL:** `https://api.fxapis.com/mcp` (or `https://api.fxapis.com/mcp/insights`
-   for the [read-only server](../README.md#read-only-server)).
-2. Leave the OAuth client fields empty: Claude registers itself.
-3. Click **Connect** and sign in to fxapis in the window that opens. Read access is always
+1. Give it a name and set the **Remote MCP server URL** to `https://api.fxapis.com/mcp` (or
+   `https://api.fxapis.com/mcp/insights` for the [read-only server](../README.md#read-only-server)).
+2. **Authentication:** choose **Sign in now**.
+3. **OAuth client:** choose **Use Claude's published identity**. Nothing to set up.
+4. Click **Add**, then **Connect**, and sign in to fxapis in the window that opens. Read access is always
    included; **Trading** is off unless you turn it on for the accounts you pick (it needs
    two-factor). Then allow it.
 
