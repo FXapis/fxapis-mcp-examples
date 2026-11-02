@@ -19,7 +19,7 @@ listed under **Connected apps** on the [API keys page](https://fxapis.com/dashbo
 
 For the `trading-mt5-safely` skill, download
 [trading-mt5-safely.zip](https://docs.fxapis.com/downloads/trading-mt5-safely.zip) and upload it
-under **Settings → Capabilities → Skills**.
+under **Customize → Skills** (**+**, then **Create skill → Upload a skill**; skills need code execution, under **Settings → Capabilities**).
 
 ## Claude Desktop with an API key
 

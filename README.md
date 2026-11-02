@@ -129,7 +129,7 @@ The [fxapis plugin](https://github.com/FXapis/fxapis-claude-plugins) adds the se
 
 For an unattended agent, set an API key as the plugin's `api_key` option instead of signing in.
 
-On claude.ai and Claude Desktop, the skill alone is a zip: download [trading-mt5-safely.zip](https://docs.fxapis.com/downloads/trading-mt5-safely.zip), upload it under **Settings → Capabilities → Skills**, and add the connector as in [`claude/`](claude/). Details: [docs.fxapis.com/guides/claude-plugin](https://docs.fxapis.com/guides/claude-plugin).
+On claude.ai and Claude Desktop, the skill alone is a zip: download [trading-mt5-safely.zip](https://docs.fxapis.com/downloads/trading-mt5-safely.zip), upload it under **Customize → Skills** (**+**, then **Create skill → Upload a skill**), and add the connector as in [`claude/`](claude/). Details: [docs.fxapis.com/guides/claude-plugin](https://docs.fxapis.com/guides/claude-plugin).
 
 ## Tools
 
