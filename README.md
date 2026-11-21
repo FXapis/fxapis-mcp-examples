@@ -133,7 +133,7 @@ On claude.ai and Claude Desktop, the skill alone is a zip: download [trading-mt5
 
 ## Tools
 
-`https://api.fxapis.com/mcp` has 29 tools. Arguments are `snake_case`. Account ids are the fxapis UUIDs from `list_accounts`, not MT5 login numbers. Volumes and prices are best sent as strings (`"0.10"`, `"1.08450"`); numbers are accepted and converted.
+`https://api.fxapis.com/mcp` has 31 tools, plus 5 MarketLabs tools for a workspace whose plan includes [MarketLabs](https://fxapis.com/marketlabs). Arguments are `snake_case`. Account ids are the fxapis UUIDs from `list_accounts`, not MT5 login numbers. Volumes and prices are best sent as strings (`"0.10"`, `"1.08450"`); numbers are accepted and converted.
 
 Results are small by design:
 
@@ -163,6 +163,7 @@ Results are small by design:
 | `search_broker_servers` | Search broker servers | The exact MT5 server for a broker's name or the start of a server name | `accounts:read` |
 | `list_account_instruments` | Map instruments | The broker symbol each instrument trades as on an account, or why it cannot; `query` narrows it | `accounts:read` |
 | `get_market_hours` | Market hours | Whether a market is open now on an account's broker, and when it opens or closes | `accounts:read` |
+| `get_price_history` | Get price history | Recent candles (M1 to MN1, up to 500 bars) for technical analysis, as compact columns | `trading:read` |
 | `get_quotes` | Get live prices | Live bid and ask for up to 20 symbols or instruments, from the account's own broker | `trading:read` |
 | `list_orders` | List orders | Orders, newest first, filtered by account, state, symbol and time | `trading:read` |
 | `get_order` | Get an order | One order, the broker's return code and fill; optionally its deals | `trading:read` (+ `history:read` for deals) |
@@ -170,6 +171,18 @@ Results are small by design:
 | `list_multi_account_orders` | List multi-account orders | Recent multi-account orders, with a result per account | `trading:read` |
 | `get_multi_account_order` | Follow a multi-account order | One multi-account order, to follow it until it settles | `trading:read` |
 | `calculate` | Margin or profit | Margin an order would need, or profit between two prices — asks the broker, opens nothing | `trading:read` |
+
+### MarketLabs (`readOnlyHint: true` — research, never places anything)
+
+Listed only for a workspace whose plan includes [MarketLabs](https://docs.fxapis.com/guides/marketlabs): the official economic calendar, CFTC positioning, headlines and a daily cited research brief, read with the same sign-in as the trading tools.
+
+| Tool | Title | What it does | Scope |
+|---|---|---|---|
+| `get_marketlabs_research` | MarketLabs research | The latest daily research brief for a watchlist pair: a lean and confidence per horizon, what it cites, and upcoming events. Research, not trading advice — it places nothing. Add `track_record` to also see how often past calls were right, once enough have settled | `marketlabs:read` |
+| `get_marketlabs_calendar` | MarketLabs economic calendar | Official releases and rate decisions by currency and date, with actual and previous figures where available, and their source; impact is fxapis' own ranking | `marketlabs:read` |
+| `get_marketlabs_news` | MarketLabs headlines | Recent headlines for a pair or metal, with the outlet's name and, when available, a short summary written by fxapis | `marketlabs:read` |
+| `get_marketlabs_today` | MarketLabs today for you | The next 24 to 72 hours of official events for the currencies you hold or watch, your open positions and pending orders against them, each pair's research lean, and what changed in the last 24 hours. Times in UTC. Research, not trading advice — it places nothing | `marketlabs:read` (positions also need `trading:read`) |
+| `get_marketlabs_snapshot` | MarketLabs snapshot | Your watchlist at a glance: last price, one-day change and volatility per pair, and relative currency strength. Give a symbol for that pair's last 90 days as well | `marketlabs:read` |
 
 ### Account lifecycle (`destructiveHint: false`, `idempotentHint: true` — safe to repeat, never trades)
 
@@ -191,6 +204,7 @@ Each one **requires an `idempotency_key`**: the agent generates a fresh one (a U
 | `cancel_order` | Cancel a pending order | Cancels a pending order that has not triggered | `trading:reduce` |
 | `place_multi_account_order` | Place one trade on many accounts | Places the same trade on many accounts at once | `trading:execute` |
 | `cancel_multi_account_order` | Cancel a multi-account order | Calls off a multi-account order before anything is sent | `trading:reduce` |
+| `close_multi_account_order` | Close a multi-account order's positions | Closes the positions a settled one opened, every account at once | `trading:reduce` |
 
 A connected app that was not allowed to trade, and calls a trading tool, gets `403` with `WWW-Authenticate: Bearer error="insufficient_scope", scope="… trading:execute"`. The app then asks you to sign in again, and the sign-in page opens with **Trading** selected.
 
@@ -202,7 +216,7 @@ https://api.fxapis.com/mcp/insights
 
 The read-only server answers questions about your MT5 accounts and cannot trade: it has no tool that opens, closes or changes anything, and its sign-in grants read access only. It is the fxapis connector we are submitting to the Claude and ChatGPT directories, whose rules exclude tools that execute financial transactions; until it is listed, add it by URL.
 
-Its 14 tools are the read tools above, with the same arguments and answers: `list_accounts`, `get_account`, `get_account_status`, `get_account_figures`, `list_positions`, `list_instruments`, `list_account_instruments`, `get_market_hours`, `get_quotes`, `list_orders`, `get_order`, `list_deals`, `get_account_overview` and `get_symbol_snapshot`.
+Its 15 tools are the read tools above, with the same arguments and answers: `list_accounts`, `get_account`, `get_account_status`, `get_account_figures`, `list_positions`, `list_instruments`, `list_account_instruments`, `get_market_hours`, `get_quotes`, `get_price_history`, `list_orders`, `get_order`, `list_deals`, `get_account_overview` and `get_symbol_snapshot`.
 
 Add it like the full server, with this URL. To trade as well, add `https://api.fxapis.com/mcp` too; each connection is listed and revoked separately under **Connected apps**. Details: [docs.fxapis.com/guides/mcp-read-only](https://docs.fxapis.com/guides/mcp-read-only).
 
